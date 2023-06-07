@@ -1,0 +1,210 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="application-name" content="eRSN New" />
+    <meta name="author" content="Weerapol Pakpibul" />
+    <meta name="description" content="" />
+    <title>eRSN: @ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/fontawesome")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+    </style>
+    @RenderSection("csses", required: false)
+</head>
+<body>
+    <!-- #################################### MENU #################################### -->
+    <nav class="navbar navbar-expand-lg bg-dark fixed-top nav-header-top">
+        <!-- start: LOGO -->
+        <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+            <img src="~/images/logo_celestica_rev.svg" title="Celestica" height="30" width="100" />
+        </a>
+        <!-- end: LOGO -->
+        <!-- start: TOGGLER BUTTON -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+        <!-- end: TOGGLER BUTTON -->
+
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="navbar-text text-white font-weight-bold">@ViewBag.Title</li>
+            </ul>
+            <div class="navbar-item dropdown" id="divUser">
+                <a data-toggle="dropdown" data-hover="dropdown" class="nav-link dropdown-toggle" data-close-others="true" href="#">
+                    <span id="FULL_NAME" class="username">
+                        @{if (Session["FULL_NAME"] != null)
+                            {<text>@Session["FULL_NAME"].ToString()</text>}
+                        else
+                        {<text>GUEST</text>} }
+                    </span>
+                    <i class="clip-chevron-down"></i>
+                </a>
+
+                <div class="dropdown-menu">
+                    <a href="javascript:void(0)" class="dropdown-item">
+                        <i class="fa fa-user"></i>
+                        <span id="UserId" class="username">
+                            @{if (Session["USER_NAME"] != null)
+                                {<text>@Session["USER_NAME"].ToString()</text>}
+                            else
+                            {<text>UNKNOW</text>} }
+                                </span>
+                            </a>
+                            <a href="javascript:void(0)" class="dropdown-item">
+                                <i class="fa fa-desktop" aria-hidden="true"></i>
+                                <span id="UserIP">@Request.UserHostAddress</span>
+                            </a>
+                            <a href="@Url.Action("Logout", "Login")" class="dropdown-item">
+                                <i class="fa fa-sign-out-alt"></i>
+                                &nbsp;Log Out
+                            </a>
+                        </div>
+                    </div>
+                    <!-- end: TOP NAVIGATION MENU -->
+                </div>
+                <!-- end div.navbar-tools -->
+            </nav>
+    <!-- end nav.navbar.navbar-expand-lg.navbar-dark.fixed-top -->
+    <!-- #################################### BODY #################################### -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- start: MAIN MENU -->
+            <div class="col-auto mr-auto collapse show d-md-flex pt-2 pl-0 pr-0 side-menu" id="navbarColor02">
+                <ul class="nav flex-column flex-nowrap nav-pills">
+                    <li class="nav-item">
+                        <a class="nav-link text-truncate collapsed text-nowrap" href="#reportDropdown" role="button" data-toggle="collapse" data-target="#reportDropdown" title="Report">
+                            <i class="fa-solid fa-newspaper"></i>
+                            <span class="span-sideMenu-text">Report</span>
+                            <i class="fa-solid fa-caret-right"></i>
+                        </a>
+
+                        <div class="collapse" aria-expanded="false" id="reportDropdown">
+                            <ul class="flex-column nav pl-4">
+                                <li class="nav-item">
+                                    <a class="nav-link p-1 text-truncate" href="@Url.Action("DellCommVMIReport","Report")">
+                                        <i class="fa-solid fa-angles-right"></i>
+                                        Dell Comm VMI Report
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <!-- end li: Report -->
+
+                    <li class="nav-item">
+                        <a class="nav-link text-nowrap" href="@Url.Action("Document", "Home")" title="Help Document">
+                            @*<a class="nav-link" href="manual.htm">*@
+                            <i class="fa-solid fa-book"></i>
+                            <span class="span-sideMenu-text">Help Document</span>
+                        </a>
+                    </li>
+                    <!-- end li: Help Document -->
+
+                    <li class="nav-item">
+                        <a class="nav-link text-nowrap" href="@Url.Action("Contact", "Home")" title="Contact Us">
+                            @*<a class="nav-link" href="contactus.htm">*@
+                            <i class="fa-solid fa-square-phone"></i>
+                            <span class="span-sideMenu-text">Contact Us</span>
+                        </a>
+                    </li>
+                    <!-- end li: Contact Us -->
+                </ul>
+                <!-- end ul: Menu bar -->
+
+                <div id="btnSideMenu">
+                    <button class="btn btn-dark float-right">
+                        <i class="fa-solid fa-angles-left"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- end: MAIN MENU -->
+            <div class="col">
+                <div class="container-fluid body-content">
+                    @RenderBody()
+                </div>
+                <!-- #################################### FOOTER #################################### -->
+                <hr />
+                <footer>
+                    <p>&copy; @(2023 == DateTime.Now.Year ? DateTime.Now.Year.ToString() : "2023 - " + DateTime.Now.Year.ToString()) | Celestica Confidential</p>
+                </footer>
+            </div>
+            <!-- end div.container.body-content -->
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        function toggleSideMenu() {
+            const btn = $('#btnSideMenu button i');
+            const toggle = btn.hasClass('fa-angles-left');
+
+            if (toggle) {
+                lessSideMenu(btn);
+                setWidthSideMenu();
+            } else {
+                showSideMenu(btn);
+                setWidthSideMenu();
+            } // end if: toggle is true
+        } // end function: toggleSideMenu
+
+        function setWidthSideMenu() {
+            const sideMenu = $('#navbarColor02');
+            $('#navbarColor02 ul.nav-pills').css('width', 'auto');
+
+            let w = Math.max.apply(Math, $('#navbarColor02 ul.nav-pills li:visible').map(function () {
+                return $(this).width();
+            }).get());
+
+            sideMenu.css('width', w);
+            $('.body-content').css('width', 'calc(100vw - (60px + '+w+'px))');
+            $('#navbarColor02 li').show();
+        } // end function: setWidthSideMenu
+
+        function showSideMenu(btn) {
+            btn.removeClass('fa-angles-right');
+            btn.addClass('fa-angles-left');
+            $('#navbarColor02 a.nav-link span').show();
+            $('#navbarColor02 a.nav-link i.fa-caret-right').show();
+        } // end function: showSideMenu
+
+        function lessSideMenu(btn) {
+            btn.removeClass('fa-angles-left');
+            btn.addClass('fa-angles-right');
+            $('#navbarColor02 a.nav-link span').hide();
+            $('#navbarColor02 a.nav-link i.fa-caret-right').hide();
+            $('#navbarColor02 div.collapse.show').removeClass('show');
+        } // end function: lessSideMenu
+
+        $(document).on('click', '#navbarColor02 a.nav-link', function () {
+            const div = $(this).next();
+
+            if ($(this).hasClass('collapsed')) {
+                div.find('li').css('display', 'none');
+            } // end if: check show or not
+
+            setWidthSideMenu();
+            showSideMenu($('#btnSideMenu button i'));
+        }); // end #navbarColor02 a.nav-link: event click
+
+        $(document).on('click', '#btnSideMenu', function (e) {
+            e.preventDefault();
+
+            toggleSideMenu();
+        }); // end #btnSideMenu: event click
+
+        $(function () {
+            highlightActiveMenuItem();
+            setWidthSideMenu();
+        }); // end pageload
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

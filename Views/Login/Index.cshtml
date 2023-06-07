@@ -1,0 +1,188 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+@section csses
+{
+    <style>
+        .login-logo {
+        }
+
+        .box-login {
+            background: #3C5570 !important;
+        }
+    </style>
+}
+
+<div class="main-login col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+    <div class="logo">&nbsp;</div>
+    <!-- start: LOGIN BOX -->
+
+    <div class="box-login">
+        <div class="login-logo">
+            <h2>Local Application</h2>
+        </div>
+
+        <h3>Sign in to your account</h3>
+
+        <p>Please enter user name and password to log in.</p>
+
+        <div class="errorHandler alert alert-danger no-display">
+            <i class="fa fa-remove-sign"></i>
+            You have some form errors. Please check below.
+        </div>
+
+        <fieldset>
+            <div class="form-group">
+                <select name="domain" id="selDomain" class="form-control required"></select>
+            </div>
+
+            <div class="form-group form-actions">
+                <span class="input-icon">
+                    <input type="text" class="form-control required" name="username" placeholder="Enter User Name" />
+                    <i class="fa fa-user"></i>
+                </span>
+                <!-- To mark the incorrectly filled input, you must add the class "error" to the input -->
+                <!-- example: <input type="text" class="login error" name="login" value="Username" /> -->
+            </div>
+
+            <div class="form-group form-actions">
+                <span class="input-icon">
+                    <input type="password" class="form-control password required" name="password" placeholder="Password" />
+                    <i class="fa fa-lock"></i>
+                </span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-bricky pull-right" onclick="login()">
+                    Login <i class="fa fa-arrow-circle-right"></i>
+                </button>
+            </div>
+
+            <div id="Msgbox" class="new-account" style="display:none">
+                &nbsp;
+            </div>
+
+            <div class="new-account">
+                This system is owned, operated and monitored by Celestica and contains confidential and proprietary information. Any access or use of this system not authorized by Celestica management is not permitted and may be reported to law enforcement authorities and/or be subject to civil action. If you are not authorized to access or use this system, disconnect now!
+            </div>
+        </fieldset>
+    </div>
+    <!-- end: LOGIN BOX -->
+    <!-- start: COPYRIGHT -->
+    <div class="copyright">
+        <p>&copy; @(2023 == DateTime.Now.Year ? DateTime.Now.Year.ToString() : "2023 - " + DateTime.Now.Year.ToString()) | Celestica Confidential</p>
+
+    </div>
+    <!-- end: COPYRIGHT -->
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        // ************************* FUNCTION **************************** //
+        function loadDomain() {
+            const url = '@Url.Action("getDomainName", "Login")';
+            const sel = $('#selDomain');
+            let str = '';
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                success: function (data) {
+                    if (data.result) {
+                        $.each(data.list, function (key) {
+                            const item = data.list[key].name;
+                            const selected = item == 'ASIA' ? ' selected' : '';
+
+                            str += `<option value="${item}"${selected}>${item}</option>`;
+                        }); // end each: data.List
+
+                        sel.html(str);
+                    } else {
+                        alert(data.message);
+                    } // end if: data.result is true
+                }, // end success
+                error: function (err) {
+                    console.log(err);
+                } // end error
+            }); // end ajax:
+        } // end function: loadDomain
+
+        function login() {
+            if (validate()) {
+                var DOMAIN = $('[name=domain]').val();
+                var USERNAME = $('[name=username]').val();
+                var PASSWORD = $('[name=password]').val();
+                var url = '@Url.Action("CheckLogin", "Login")';
+                var data = { 'USER': USERNAME, 'PASS': PASSWORD, 'DOMAIN': DOMAIN };
+
+                $.blockUI({ message: '<h3><img src="@Url.Content("~/images/loading.gif")" /> Please wait...</h3>' });
+
+                $.post(url, data, function (response) {
+                    if (response.Result) {
+                        $.unblockUI();
+                        $('div.box-login').block({ message: null });
+                        //console.log('USER_NAME: ' + response.USER_NAME + '\n' + 'FULL_NAME: ' + response.FULL_NAME);
+                        location.href = '@Url.Action("Index", "Home")';
+                    } else {
+                        alert('Error! ' + response.Message);
+                        $.unblockUI();
+                    } // end if: Result IS TRUE
+                }) // end post:
+                .fail(function (xhr, status, error) {
+                    console.log(error);
+                    alert('Error! Username, Password is incorrect!');
+                    $.unblockUI();
+                }); // end fail:
+            } // end if: validate
+        } // end function: login
+
+        function validate() {
+            var result = true;
+
+            // Clear old label alert
+            $('.required').each(function () {
+                $(this).removeClass('alert-warning');
+            });
+
+            // Validate form class required
+            $('.required').each(function () {
+                if ($(this).val().trim().length === 0) {
+                    $(this).addClass('alert-warning');
+                    result = false;
+                } // end if: .required IS NULL
+            });
+
+            // MessageBox
+            if (!result) {
+                ClearMsgbox('#Msgbox');
+                $('#Msgbox').addClass('alert-warning').html('<b>Warning!</b> these field require.').show(300);
+                setTimeout(function () { $('#Msgbox').hide(500); }, 3000);
+            } // end if: result IS NULL
+
+            return result;
+        } // end function: validate
+
+        // ************************* EVENT **************************** //
+        $(document).on('keypress', '[name="username"]', function (e) {
+            if (e.keyCode == 13) {
+                $('[name="password"]').focus();
+
+            } // end if: press Enter
+        }); // end username: event enter
+
+        $(document).on('keypress', '[name="password"]', function (e) {
+            if (e.keyCode == 13) {
+                login();
+
+            } // end if: press Enter
+        }); // end password: event enter
+
+        // ************************* PAGE LOAD **************************** //
+        $(function () {
+            loadDomain();
+        }); // end PageLoad
+    </script>
+}

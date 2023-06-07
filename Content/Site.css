@@ -1,0 +1,211 @@
+﻿body {
+    padding-top: calc(43px + 1rem);
+    padding-bottom: 0px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+    min-height: calc(100vh - 152px);
+    padding-top: 0.5rem;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.navbar-inverse .navbar-toggle:hover,
+.navbar-inverse .navbar-toggle:focus {
+    background-color: #777;
+    border-color: #fff
+}
+
+hr {
+    border-top: 5px solid #333333;
+}
+
+.side-menu {
+    position: relative;
+    background-color: #606367;
+    min-height: calc(100vh - (43px + 1rem));
+    transition: 0.5s;
+}
+
+#divUser a {
+    color: #eeeeee;
+}
+
+    #divUser .dropdown-menu {
+        background-color: #606367;
+    }
+
+    #divUser .dropdown-menu a:hover {
+        background-color: #343a40;
+    }
+
+#navbarColor02 .nav-pills .nav-link.active {
+    color: #ffffff;
+    background-image: linear-gradient(#64696d, #5c6267, #343a40);
+}
+
+#navbarColor02 .nav-link {
+    color: #eeeeee;
+}
+
+#btnSideMenu {
+    position: absolute;
+    bottom: 0.25em;
+    right: 0.25em;
+}
+
+.body-content a {
+    color: #000000;
+    text-decoration: underline;
+}
+
+    .body-content a:hover {
+        color: #D5711B;
+    }
+
+.div-scroll {
+    overflow-x: scroll;
+    max-width: -moz-fit-content;
+    max-width: -webkit-fit-content;
+}
+
+    .div-scroll table.table-bordered {
+        border: 1px solid #dee2e6;
+        border-spacing: 0;
+        border-radius: 0.3rem 0.3rem 0.3rem 0.3rem;
+        -moz-border-radius: 0.3rem 0.3rem 0.3rem 0.3rem;
+        -webkit-border-radius: 0.3rem 0.3rem 0.3rem 0.3rem;
+        box-shadow: 0 0.1rem 0.1rem #dee2e6;
+        border-collapse: unset;
+    }
+
+        .div-scroll table.table-bordered th:first-child {
+            border-radius: 0.3rem 0 0 0;
+            -moz-border-radius: 0.3rem 0 0 0;
+            -webkit-border-radius: 0.3rem 0 0 0;
+        }
+
+        .div-scroll table.table-bordered th:last-child {
+            border-radius: 0 0.3rem 0 0;
+            -moz-border-radius: 0 0.3rem 0 0;
+            -webkit-border-radius: 0 0.3rem 0 0;
+        }
+
+        .div-scroll table.table-bordered td:first-child,
+        .div-scroll table.table-bordered th:first-child {
+            border-left: medium none;
+        }
+
+        .div-scroll table.table-bordered th {
+            text-align: center;
+            background-color: #dce9f9;
+            background-image: -moz-linear-gradient(center top, #F8F8F8, #ECECEC);
+            background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(#F8F8F8), to(#ECECEC), color-stop(.4, #F8F8F8));
+            border-top: medium none;
+            box-shadow: 0 0.1rem 0 rgba(255, 255, 255, 0.8) inset;
+            text-shadow: 0 0.1rem 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .div-scroll table.table-bordered td,
+        .div-scroll table.table-bordered th {
+            border-left: 1px solid #CCCCCC;
+            border-top: 1px solid #CCCCCC;
+        }
+
+        .div-scroll table.table-bordered td {
+            white-space: nowrap;
+        }
+
+.container-body {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+td.td-center {
+    text-align: center;
+}
+
+td.td-right {
+    text-align: right;
+}
+
+#myTable_length,
+#myTable_info {
+    float: left;
+}
+
+#myTable_filter,
+#myTable_paginate {
+    float: right;
+}
+
+#myTable_paginate a:not(.disabled) {
+    cursor: pointer;
+}
+
+#myTable_paginate a.disabled {
+    color: #999;
+}
+
+#myTable_paginate a:not(.next) {
+    padding-right: 0.3rem;
+}
+
+#myTable_paginate a.current {
+    font-weight: bold;
+}
+
+.dt-buttons {
+    margin-left: 10px;
+    float: left;
+}
+
+.dt-button.buttons-excel.buttons-html5 {
+    background: url("../images/excel-icon.png") #80c080 no-repeat 6px 6px !important;
+    padding-left: 2.3rem;
+    padding-right: 0.3rem;
+    color: white;
+    font-weight: bold;
+    border: 1px solid #4f9d4f;
+    height: 36px;
+    display: block;
+    line-height: 32px;
+    border-radius: 0.3rem;
+    text-decoration: none;
+}
+
+#myTable_length select {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-color: #ced4da;
+    border-top-right-radius: 0.3rem;
+    border-bottom-right-radius: 0.3rem;
+}
+
+#myTable_filter input[type="search"] {
+    margin-left: 0px;
+    padding-left: 0px;
+    border: 1px solid #ced4da;
+    border-top-right-radius: 0.3rem;
+    border-bottom-right-radius: 0.3rem;
+    text-indent: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}

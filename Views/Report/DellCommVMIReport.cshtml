@@ -1,0 +1,681 @@
+﻿@{
+    ViewBag.Title = "Dell Comm VMI Report";
+}
+
+<div class="container-body">
+    <fieldset class="border rounded-lg p-3 mb-3">
+        <legend class="w-auto p-3 rounded m-0"><i class="fa-solid fa-magnifying-glass"></i>Search Condition</legend>
+        <form id="frmMain">
+            <div class="row form-group">
+                <label for="txtRSN" class="col-md-2 col-sm-4 col-form-label">RSN NO. :</label>
+                <div class="col-md-4 col-sm-8">
+                    <input type="text" id="txtRSN" class="form-control" maxlength="18" placeholder="RSN Number" />
+                </div>
+
+                <label for="txtInvoice" class="col-md-2 col-sm-4 col-form-label">Invoice No. :</label>
+                <div class="col-md-4 col-sm-8">
+                    <input type="text" id="txtInvoice" class="form-control" maxlength="20" placeholder="Invoice Number" />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <label for="selCustCode" class="col-md-2 col-sm-4 col-form-label">Customer Code :</label>
+                <div class="col-md-4 col-sm-8">
+                    <select id="selCustCode" class="form-control">
+                        <option value="">----- Please Choose -----</option>
+                    </select>
+                </div>
+
+                <label for="selRsnType" class="col-md-2 col-sm-4 col-form-label">RSN Type :</label>
+                <div class="col-md-4 col-sm-8">
+                    <select id="selRsnType" class="form-control">
+                        <option value="">----- Please Choose -----</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <label class="col-12 col-form-label font-weight-bold">Created Date</label>
+            </div>
+
+            <div class="row form-group">
+                <label for="txtCreateDtSt" class="col-md-2 col-sm-4 col-form-label">From :</label>
+                <div class="col-md-4 col-sm-8">
+                    <input type="date" id="txtCreateDtSt" class="form-control" />
+                </div>
+
+                <label for="txtCreateDtEd" class="col-md-2 col-sm-4 col-form-label">To :</label>
+                <div class="col-md-4 col-sm-8">
+                    <input type="date" id="txtCreateDtEd" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <label class="col-12 col-form-label">
+                    <span class="font-weight-bold">Shipment Date</span>
+                    <span class="text-black-50">(Pick up Date/Time (Logistic))</span>
+                </label>
+            </div>
+
+            <div class="row form-group">
+                <label for="txtShipmentDtSt" class="col-md-2 col-sm-4 col-form-label">From :</label>
+                <div class="col-md-4 col-sm-8">
+                    <input type="date" id="txtShipmentDtSt" class="form-control" />
+                </div>
+
+                <label for="txtShipmentDtEd" class="col-md-2 col-sm-4 col-form-label">To :</label>
+                <div class="col-md-4 col-sm-8">
+                    <input type="date" id="txtShipmentDtEd" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <button type="button" class="btn btn-danger mr-3" id="btnReset">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    Reset
+                </button>
+                <button type="button" class="btn btn-success mr-3" id="btnExcel">
+                    <i class="fa-solid fa-file-excel"></i>
+                    Export
+                </button>
+                <button type="button" class="btn btn-dark mr-3" id="btnSearch">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Search
+                </button>
+            </div>
+        </form>
+    </fieldset>
+
+    <div class="div-scroll">
+        <table class="table table-bordered table-hover" id="myTable">
+            <thead><tr></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var myTableCol = ['Sales Document', 'Sales Document Item', 'NetWeight', 'Gross Weight', 'Weight', 'Number Of Packages', 'PO', 'Delivered', 'Serial Number', 'HAWB', 'Carton Info', 'Dates Actual and Arrival', 'BoxID', 'Aus Net ser', 'Pallet ID', 'Ship To Code', 'Requestor Code', 'OTM PO Number', 'PO Line Number', 'Ship Date (yyyy-mm-dd)', 'Ship Time (hh:mm)', 'Promise Date (yyyy-mm-dd)', 'Time (hh:mm)', 'Handling Unit', 'OTM Weight', 'Shipped Lot Quantity', 'Volume', 'Expedite Flag', 'Approval ID', 'BU', 'PF', 'ELM PO Number', 'ELM PO Line Number', 'Country Key', 'AirWay Bill', 'Batch', 'RSN', 'Sch Line Num', 'Est Arr Date', 'Packing Instruction', 'Lot Serial Nr', 'Lot Serial Qty', 'MSD Kit', 'CRP PO Nr', 'Manufacturing Date', 'Mode of Transport', 'VMI: Delivery Order', 'VMI: Item Number', 'VMI: Quantity', 'VMI: Unit Price', 'VMI: eRSN No', 'VMI: Invoice No', 'VMI: Shipment Date', 'VMI: Delivery Date', 'VMI: Master Way bill', 'VMI: BOL Num', 'VMI: Total Containers', 'VMI: Height', 'VMI: Length', 'VMI: Width', 'VMI: Gross Weight', 'VMI: Volume Weight', 'VMI: Container ID', 'VMI: Container Attribute (Amt)'];
+        // ************************* FUNCTION **************************** //
+        function reset() {
+            const frmMain = $('#frmMain input, #frmMain select');
+
+            $.each(frmMain, function () {
+                $(this).val('');
+
+                if ($(this).attr('type') === 'date') {
+                    $(this).removeAttr('min');
+                    $(this).removeAttr('max');
+                } // end if: check date
+            }); // end each:
+
+            SetDataTable();
+        } // end function: reset
+
+        function search() {
+            if (checkCondition()) {
+                GetDellCommVMITable();
+            } else {
+                swal("Error!", "Please select your condition first!", "error");
+            } // end if: checkCondition is true
+        } // end function: search
+
+        function exportExcel () {
+            if (checkCondition()) {
+                ExportDellCommVMITable();
+            } else {
+                swal("Error!", "Please select your condition first!", "error");
+            } // end if: checkCondition is true
+        } // end function: export
+
+        function checkCondition() {
+            let result = false;
+            const frmMain = $('#frmMain input');
+
+            $.each(frmMain, function () {
+                if ($(this).val() != '') {
+                    result = true;
+                } // end if: check input is not null
+            }); // end each:
+
+            return result;
+        } // end function: checkCondition
+
+        function GetCustCode() {
+            const url = '@Url.Action("GetCustCode", "Report")';
+            const sel = $('#selCustCode');
+
+            getDataToSelect(url, sel, 0, 0, 1);
+        } // end function: GetCustCode
+
+        function GetRsnType() {
+            const sel = $('#selRsnType');
+            const arr = '@System.Configuration.ConfigurationManager.AppSettings["RSNType"].ToString()';
+
+            getDataToSelect('', sel, 0, 0, 0, arr);
+        } // end function: GetRsnType
+
+        function DateMinMax(id) {
+            const frm = $(`#${id}St`);
+            const end = $(`#${id}Ed`);
+
+            if (frm.val() != '') {
+                end.attr('min', frm.val());
+            } else {
+                end.removeAttr('min');
+            } // end if: frm
+
+            if (end.val() != '') {
+                frm.attr('max', end.val());
+            } else {
+                frm.removeAttr('max');
+            } // end if: frm
+        } // end function: CreateDateMinMax
+
+        function GetDellCommVMITable() {
+            const url = '@Url.Action("GetDellCommVMITable", "Report")';
+            const param = {};
+
+            $.each($('#frmMain .form-control'), function () {
+                param[$(this).attr('id')] = $(this).val();
+            }); // end each: #frmMain .form-control
+
+            $.ajax({
+                url: url,
+                data: param,
+                type: 'POST',
+                success: function (data) {
+                    if (data.Result) {
+                        SetDataTable(data.List);
+                    } // end if: data.Result
+                } // end success:
+            }); // end ajax:
+        } // end function: GetDellCommVMITable
+
+        function ExportDellCommVMITable() {
+            const url = '@Url.Action("ExportDellCommVMITable", "Report")';
+            const param = {};
+
+            $.each($('#frmMain .form-control'), function () {
+                param[$(this).attr('id')] = $(this).val();
+            }); // end each: #frmMain .form-control
+
+            param['col'] = myTableCol;
+
+            $.ajax({
+                url: url,
+                data: param,
+                type: 'POST',
+                success: function (data) {
+                    if (data.Result) {
+                        const path = getLocationHref();
+
+                        window.open(path + data.File, '_self', 'DellcommVMIReport.xlsx');
+                    } // end if: data.Result is true
+                } // end success:
+            }); // end ajax:
+        } // end function: ExportDellCommVMITable
+
+        function SetDataTable(jsonObj) {
+            temp = '{}';
+            jsonObj = jsonObj == null ? temp : jsonObj;
+            $('#myTable').dataTable({
+                destroy: true,
+                ordering: true,
+                pageLength: 10,
+                sortAble: true,
+                data: jQuery.parseJSON(jsonObj),
+                columns: [
+                    { data: 'sales_document' },     //0
+                    { data: 'sales_document_item' },//1
+                    { data: 'net_weight' },         //2
+                    { data: 'gross_weight' },       //3
+                    { data: 'weight' },             //4
+                    { data: 'number_of_packages' }, //5
+                    { data: 'po' },                 //6
+                    { data: 'delivered' },          //7
+                    { data: 'serial_number' },      //8
+                    { data: 'hawb' },               //9
+                    { data: 'carton_info' },        //10
+                    { data: 'dates_actual_and_arrival'},//11
+                    { data: 'box_id' },             //12
+                    { data: 'aus_net_ser' },        //13
+                    { data: 'pallet_id' },          //14
+                    { data: 'ship_to_code' },       //15
+                    { data: 'requestor_code' },     //16
+                    { data: 'otm_po_number' },      //17
+                    { data: 'po_line_number' },     //18
+                    { data: 'ship_date_yyyy_mm_dd'},//19
+                    { data: 'ship_time_hh_mm' },    //20
+                    { data: 'promise_date_yyyy_mm_dd'},//21
+                    { data: 'time_hh_mm' },         //22
+                    { data: 'handling_unit' },      //23
+                    { data: 'otm_weight' },         //24
+                    { data: 'shipped_lot_quantity'},//25
+                    { data: 'volume' },             //26
+                    { data: 'expedite_flag' },      //27
+                    { data: 'approval_id' },        //28
+                    { data: 'bu' },                 //29
+                    { data: 'pf' },                 //30
+                    { data: 'elm_po_number' },      //31
+                    { data: 'elm_po_line_number' }, //32
+                    { data: 'country_key' },        //33
+                    { data: 'air_way_bill' },       //34
+                    { data: 'batch' },              //35
+                    { data: 'rsn' },                //36
+                    { data: 'sch_line_num' },       //37
+                    { data: 'est_arr_date' },       //38
+                    { data: 'packing_instruction' },//39
+                    { data: 'lot_serial_nr' },      //40
+                    { data: 'lot_serial_qty' },     //41
+                    { data: 'msd_kit' },            //42
+                    { data: 'crp_po_nr' },          //43
+                    { data: 'manufacturing_date' }, //44
+                    { data: 'mode_of_transport' },  //45
+                    { data: 'delivery_order' },     //46
+                    { data: 'rdt_cuspn' },          //47
+                    { data: 'rdt_shipqty' },        //48
+                    { data: 'rdt_billup' },         //49
+                    { data: 'rsn_no' },             //50
+                    { data: 'inv_invoice' },        //51
+                    { data: 'ship_date' },          //52
+                    { data: 'delivery_date' },      //53
+                    { data: 'waybill' },            //54
+                    { data: 'bolnum' },             //55
+                    { data: 'rsn_totpack' },        //56
+                    { data: 'h' },                  //57
+                    { data: 'l' },                  //58
+                    { data: 'w' },                  //59
+                    { data: 'gw' },                 //60
+                    { data: 'vw' },                 //61
+                    { data: 'container_id' },       //62
+                    { data: 'amt' }                 //63
+                ],
+                lengthMenu: [
+                    [10, 50, 100, -1],
+                    [10, 50, 100, 'All'],
+                ],
+                oLanguage: {
+                    sLengthMenu: `${uniq_dataTable_show} _MENU_`,
+                    sSearch: uniq_dataTable_search,
+                },
+                columnDefs: [
+                    {
+                        targets: 0,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 1,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 2,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 3,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 4,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 5,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 6,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 7,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 8,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 9,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 10,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 11,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 12,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 13,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 14,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 15,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 16,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 17,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 18,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 19,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 20,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 21,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 22,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 23,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 24,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 25,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 26,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 27,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 28,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 29,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 30,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 31,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 32,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 33,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 34,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 35,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 36,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 37,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 38,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 39,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 40,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 41,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 42,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 43,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 44,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 45,             //
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 46,             // delivery_order
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 47,             // Item Number
+                        className: 'td-center',
+                    },
+                    {
+                        targets: 48,             // Quantity
+                        className: 'td-right',
+                    },
+                    {
+                        targets: 49,             // Unit Price
+                        className: 'td-right',
+                    },
+                    {
+                        targets: 50,             // rsn_no
+                        className: 'td-center',
+                    },
+                    {
+                        targets: 51,             // inv_invoice
+                        className: 'td-center',
+                    },
+                    {
+                        targets: 52,             // ship_date
+                        className: 'td-center',
+                    },
+                    {
+                        targets: 53,             // delivery_date
+                        className: 'td-center',
+                    },
+                    {
+                        targets: 54,             // waybill
+                        className: 'td-center',
+                    },
+                    {
+                        targets: 55,             // bolnum
+                        className: 'td-center',
+                    },
+                    {
+                        targets: 56,             // rsn_totpack
+                        className: 'td-right',
+                    },
+                    {
+                        targets: 57,             // h
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 58,             // l
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 59,            // w
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 60,            // gw
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 61,            // vw
+                        visible: false,
+                        searchable: false,
+                    },
+                    {
+                        targets: 62,            // container_id
+                        className: 'td-center',
+                    },
+                    {
+                        targets: 63,            // amt
+                        className: 'td-right',
+                    },
+
+                ],
+                autoWidth: true,
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'DellCommVMIReport'
+                    }
+                ],
+                order: [[1, 'asc'], [2, 'asc'], [14, 'asc'], [13, 'asc']],
+            }); // end dataTable
+
+            setTableWidth();
+            setTableInfo();
+        } // end function: SetDataTable
+
+        function setTableWidth() {
+            const w = $('fieldset.border.rounded-lg').innerWidth();
+            $('#myTable').css('width', w + 'px');
+        } // end function: setTableWidth
+
+        function setTableInfo() {
+            $('#myTable_filter label').addClass('input-group');
+            $('#myTable_filter label').addClass('mb-3');
+            $('.dt-button.buttons-excel.buttons-html5').attr('title', 'Export to Excel');
+        } // end function: setTableInfo
+
+        function getMyTableCol() {
+            $.each(myTableCol, function (i, val) {
+                $('#myTable thead tr').append(`<th>${val}</th>`);
+            }); // end each: myTableCol
+        } // end function: getMyTableCol
+
+        // ************************* EVENT **************************** //
+        $(document).on('click', '#btnReset', function () {
+            reset()
+        }); // end #btnReset: event click
+
+        $(document).on('click', '#btnExcel', function () {
+            exportExcel();
+        }); // end #btnExcel: event click
+
+        $(document).on('click', '#btnSearch', function () {
+            search();
+        }); // end #btnSearch: event click
+
+        $(document).on('change', 'input[type="date"]', function () {
+            const id = $(this).attr('id');
+
+            DateMinMax(id.substring(0, id.length - 2));
+        }); // end input[type="date"]: event change
+
+        $(window).resize(function () {
+            setTableWidth();
+        }); // end window: event resize
+
+        $(document).on('click', '#navbarColor02', function () {
+            setTableWidth();
+        }); // end #navbarColor02: event click
+
+        // ************************* PAGE LOAD **************************** //
+        $(function () {
+            getMyTableCol();
+            reset();
+            GetCustCode();
+            GetRsnType();
+        }); // end pageload:
+    </script>
+}

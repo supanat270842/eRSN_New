@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "Help Document";
+    string linkOldeRSN = System.Configuration.ConfigurationManager.AppSettings["LinkOldeRSN"];
+}
+
+@section csses {
+    <style>
+        h6 {
+            color: #D5711B;
+        }
+
+        ul li {
+            list-style: none;
+        }
+
+            ul li i.fa-file-excel {
+                color: #00844b;
+            }
+
+            ul li i.fa-file-pdf {
+                color: #f22d00;
+            }
+
+            ul li i.fa-folder-open {
+                color: #ffd254;
+            }
+
+            ul li i.fa-file-powerpoint {
+                color: #d12a00;
+            }
+    </style>
+}
+
+<div class="container">
+    <div class="row mb-3">
+        <img src="~/images/HelpDocument.gif" />
+    </div>
+
+    <div class="row mb-3">
+        <h6>Document Link</h6>
+    </div>
+
+    <div class="row mb-3">
+        <ul>
+            <li>
+                <i class="fa-solid fa-file-excel"></i>
+                <a href="@(linkOldeRSN)manual_file/eRSN_flow_Oct_5_12_v1.xls" target="_blank">System Flow</a>
+            </li>
+            <li>
+                <i class="fa-solid fa-file-pdf"></i>
+                <a href="@(linkOldeRSN)manual_file/eRSN_Request 2010.pdf" target="_blank">Request eRSN</a>
+            </li>
+            <li>
+                <i class="fa-solid fa-file-pdf"></i>
+                <a href="@(linkOldeRSN)manual_file/eRSN_Store.pdf" target="_blank">Store Process</a>
+            </li>
+            <li>
+                <i class="fa-solid fa-file-pdf"></i>
+                <a href="@(linkOldeRSN)manual_file/eRSN_Logistic.pdf" target="_blank">Logistic Process</a>
+            </li>
+            <li>
+                <i class="fa-solid fa-file-pdf"></i>
+                <a href="@(linkOldeRSN)manual_file/eRSN_FGD.pdf" target="_blank">FGD Process</a>
+            </li>
+            <li>
+                <i class="fa-solid fa-file-excel"></i>
+                <a href="@(linkOldeRSN)manual_file/2013/Estimate_Premium_freight_cost_guideline_V1.xls" target="_blank">Estimate Premuim Freight Cost Guideline</a>
+            </li>
+            <li>
+                <i class="fa-solid fa-folder-open"></i>
+                <a href="https://drive.google.com/drive/folders/1O4JpeaO3P7R7tD_kh_mTvZy4dMVujtbx" target="_blank">Outbound Routing Guide</a>
+            </li>
+            <li>
+                <i class="fa-solid fa-file-excel"></i>
+                <a href="@(linkOldeRSN)manual_file/2013/Incoterms_2010_V1.xls" target="_blank">Incoterms 2010</a>
+            </li>
+            <li>
+                <i class="fa-solid fa-folder-open"></i>
+                <a href="https://drive.google.com/drive/folders/1O4JpeaO3P7R7tD_kh_mTvZy4dMVujtbx?usp=sharing" target="_blank">FOC & Freight Premiums Approval Level</a>
+            </li>
+            <li>
+                <i class="fa-solid fa-file-powerpoint"></i>
+                <a href="@(linkOldeRSN)manual_file/How_to_correct_fill_in_eRSN_v3.ppt" target="_blank">How to correct fill in eRSN</a>
+            </li>
+            <li>
+                <i class="fa-solid fa-file-powerpoint"></i>
+                <a href="@(linkOldeRSN)manual_file/RSN_One_Click.ppt" target="_blank">eRSN OneClick</a>
+            </li>
+            <li>
+                <i class="fa-solid fa-file-excel"></i>
+                <a href="@(linkOldeRSN)manual_file/eRSN_Setup_v1_4.xls" target="_blank">How to setup the invoice</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- end div.container -->
